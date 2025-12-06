@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8d7e3; /* soft pink */
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        #timer {
+            font-size: 70px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        #modeLabel {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .btn-row {
+            margin: 15px 0;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #workBtn { background: #4caf50; color: white; }
+        #breakBtn { background: #9c27b0; color: white; }
+
+        #pauseBtn { background: #ff9800; color: white; display: none; }
+        #resumeBtn { background: #2196f3; color: white; display: none; }
+
+    </style>
+</head>
+
+<body>
+
+    <h1>Pomodoro Timer</h1>
+
+    <div id="modeLabel">Ready</div>
+    <div id="timer">00:00</div>
+
+    <!-- Row 1 -->
+    <div class="btn-row">
+        <button id="workBtn">Work (25:00)</button>
+        <button id="breakBtn">Break (5:00)</button>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="btn-row">
+        <button id="pauseBtn">Pause</button>
+        <button id="resumeBtn">Resume</button>
+    </div>
+
+    <script>
+        let timer;
+        let running = false;
+        let timeLeft = 0;
+
+        const timerDisplay = document.getElementById("timer");
+        const modeLabel = document.getElementById("modeLabel");
+        const pauseBtn = document.getElementById("pauseBtn");
+        const resumeBtn = document.getElementById("resumeBtn");
+
+        function updateDisplay() {
+            let min = Math.floor(timeLeft / 60);
+            let sec = timeLeft % 60;
+
+            timerDisplay.innerText = 
+                `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateDisplay();
+            } else {
+                clearInterval(timer);
+                running = false;
+                modeLabel.innerText = "Done!";
+            }
+        }
+
+        function startSession(seconds, label) {
+            clearInterval(timer);
+
+            timeLeft = seconds;
+            running = true;
+            modeLabel.innerText = label;
+
+            updateDisplay();
+            timer = setInterval(updateTimer, 1000);
+
+            pauseBtn.style.display = "inline-block";
+            resumeBtn.style.display = "none";
+        }
+
+        function pauseTimer() {
+            if (running) {
+                running = false;
+                clearInterval(timer);
+
+                pauseBtn.style.display = "none";
+                resumeBtn.style.display = "inline-block";
+            }
+        }
+
+        function resumeTimer() {
+            if (!running && timeLeft > 0) {
+                running = true;
+                timer = setInterval(updateTimer, 1000);
+
+                resumeBtn.style.display = "none";
+                pauseBtn.style.display = "inline-block";
+            }
+        }
+
+        document.getElementById("workBtn").onclick = () => {
+            startSession(25 * 60, "Work Session");
+        };
+
+        document.getElementById("breakBtn").onclick = () => {
+            startSession(5 * 60, "Break Time");
+        };
+
+        pauseBtn.onclick = pauseTimer;
+        resumeBtn.onclick = resumeTimer;
+    </script>
+
+</body>
+</html>
