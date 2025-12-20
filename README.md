@@ -1,0 +1,1 @@
+This is a website made especially for the pomodro study technique. It is a simple html coded website, as my first project. It has resume and stop features as well. It is very effective for time management especially for students.
